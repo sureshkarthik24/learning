@@ -1,0 +1,12 @@
+2) Find the difference in spending between each transaction and the previous transaction for that specific customer.
+
+WITH transaction_cal AS
+(select customer_id,
+        transaction_date,
+        amount,
+		COALESCE(LAG(amount),0) OVER (
+		PARTITION BY customer_id
+		order by transaction_date) as previous_amount
+FROM transactions)
+SELECT *, amount - next_amount AS difference
+FROM transaction_cal;

@@ -1,0 +1,18 @@
+1) Write a SQL query that returns:
+customer_id, transaction_date, current_transaction_amount, cumulative_spending, and a flag or filter to show the exact moment they hit $10,000.
+
+WITH CumulativeSpending AS (
+    SELECT 
+        customer_id,
+        transaction_date,
+        amount,
+        -- This is the "Magic" line. It sums as it goes.
+        SUM(amount) OVER (
+            PARTITION BY customer_id 
+            ORDER BY transaction_date
+        ) AS running_total
+    FROM transactions
+)
+SELECT *
+FROM CumulativeSpending
+WHERE running_total >= 10000;

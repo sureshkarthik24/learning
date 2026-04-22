@@ -1,0 +1,12 @@
+1) Write a SQL query that returns:
+customer_id, transaction_date, current_transaction_amount, cumulative_spending, and a flag or filter to show the exact moment they hit $10,000.
+
+2) Find the difference in spending between each transaction and the previous transaction for that specific customer.
+
+3) The Scenario: You have a table user_activity with user_id and timestamp. A "session" is defined as a sequence of activities where the gap between consecutive events is less than 30 minutes.
+
+The Task: Write a query to assign a unique session_id to each group of events for each user.
+
+Constraints:
+a) Use Standard SQL (PostgreSQL/SparkSQL compatible).
+b) Optimize for a multi-billion row dataset (think about window functions).

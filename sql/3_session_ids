@@ -1,0 +1,22 @@
+WITH user_activity_ts AS (
+    SELECT 
+        user_id, 
+        timestamp AS curr_ts,
+        LAG(timestamp) OVER (PARTITION BY user_id ORDER BY timestamp) AS prev_ts
+    FROM user_activity
+),
+session_flags AS (
+    SELECT *,
+        -- If the gap is > 30 mins OR it's the first record (prev_ts is null), it's a new session
+        CASE 
+            WHEN curr_ts > prev_ts + INTERVAL '30 minutes' OR prev_ts IS NULL THEN 1 
+            ELSE 0 
+        END AS is_new_session
+    FROM user_activity_ts
+)
+-- Cumulative SUM turns those '1' flags into a unique Session ID
+SELECT 
+    user_id,
+    curr_ts,
+    SUM(is_new_session) OVER (PARTITION BY user_id ORDER BY curr_ts) AS session_id
+FROM session_flags;
